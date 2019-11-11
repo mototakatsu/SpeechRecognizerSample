@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import com.example.speechrecognizersample.databinding.ActivityMainBinding
 import android.speech.RecognizerIntent
 import android.content.Intent
+import android.util.Log
 import android.widget.ArrayAdapter
 import java.util.*
 
@@ -26,12 +27,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onTapStartMic() {
-        // 前回の結果をクリア
-        adapter.clear()
-
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+        // LANGUAGE_MODEL_FREE_FORM or LANGUAGE_MODEL_WEB_SEARCH
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         // 認識する言語を指定
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.ENGLISH.toString());
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US.toLanguageTag());
 //        // 認識する候補数の指定
 //        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 10);
 //        // 音声認識時に表示する案内を設定
@@ -44,7 +44,9 @@ class MainActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-
+            // 前回の結果をクリア
+            adapter.clear()
+            
             // data から音声認識の結果を取り出す（リスト形式で）
             val extraResults = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)
 
